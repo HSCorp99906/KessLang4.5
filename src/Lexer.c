@@ -22,6 +22,8 @@ void tokenize(lexer_t* lexer, unsigned int lineNum) {
     while (1) {
         if (lexer -> currentChar == '\0') {
             break;
+        } else if (lexer -> currentChar == ' ' || lexer -> currentChar == '\t') {
+            lexer_advance(lexer);
         }
 
         strncat(lexicalBuffer, &lexer -> currentChar, 1);
@@ -79,7 +81,7 @@ void tokenize(lexer_t* lexer, unsigned int lineNum) {
             case 'X':
             case 'Y':
             case 'Z':
-                tokenlist_add(create_token(T_CHAR, 0, NULL, lexer -> currentChar, lexer -> lineNum, 0), lexer -> tokenTray);
+                tokenlist_add(create_token(T_CHAR, 0, lexer -> source, lexer -> currentChar, lexer -> lineNum, 0), lexer -> tokenTray);
                 break;
             case '0':
             case '1':
