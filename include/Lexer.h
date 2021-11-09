@@ -8,7 +8,6 @@
 
 typedef struct Lexer {
     char* source;
-    char currentChar;
     unsigned int pos;
     tokenlist_t* tokenTray;
     unsigned int lineNum;

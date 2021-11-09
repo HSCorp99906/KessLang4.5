@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
 
     fclose(fp);
 
+    lexer.source = "___EOF___";
+    tokenize(&lexer, lineNum);
+
     parser_t parser;
     init_parser(&parser, &tokenlist);
     parse(&parser);

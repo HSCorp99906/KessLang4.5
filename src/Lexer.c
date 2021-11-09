@@ -9,26 +9,12 @@ void lexer_init(lexer_t* lexer, tokenlist_t* tokens) {
 }
 
 
-void lexer_advance(lexer_t* lexer) {
-    lexer -> currentChar = lexer -> source[++lexer -> pos];
-}
-
-
 void tokenize(lexer_t* lexer, unsigned int lineNum) {
     char lexicalBuffer[256];
     lexer -> lineNum = lineNum;
-    lexer -> currentChar = lexer -> source[0];
 
-    while (1) {
-        if (lexer -> currentChar == '\0') {
-            break;
-        } else if (lexer -> currentChar == ' ' || lexer -> currentChar == '\t') {
-            lexer_advance(lexer);
-        }
-
-        strncat(lexicalBuffer, &lexer -> currentChar, 1);
-
-        switch (lexer -> currentChar) {
+    for (int i = 0; i < strlen(lexer -> source); ++i) {
+        switch (lexer -> source[i]) {
             case 'a':
             case 'b':
             case 'c':
@@ -81,7 +67,7 @@ void tokenize(lexer_t* lexer, unsigned int lineNum) {
             case 'X':
             case 'Y':
             case 'Z':
-                tokenlist_add(create_token(T_CHAR, 0, lexer -> source, lexer -> currentChar, lexer -> lineNum, 0), lexer -> tokenTray);
+                tokenlist_add(create_token(T_CHAR, 0, lexer -> source, lexer -> source[i], lexer -> lineNum, 0), lexer -> tokenTray);
                 break;
             case '0':
             case '1':
@@ -93,15 +79,15 @@ void tokenize(lexer_t* lexer, unsigned int lineNum) {
             case '7':
             case '8':
             case '9':
-                tokenlist_add(create_token(T_INTEGER_LITERAL, 0, NULL, lexer -> currentChar, lexer -> lineNum, 0), lexer -> tokenTray);
+                tokenlist_add(create_token(T_INTEGER_LITERAL, 0, NULL, lexer -> source[i], lexer -> lineNum, 0), lexer -> tokenTray);
                 break;
             case ';':
-                tokenlist_add(create_token(T_END_STATEMENT, 0, NULL, lexer -> currentChar, lexer -> lineNum, 0), lexer -> tokenTray);
+                tokenlist_add(create_token(T_END_STATEMENT, 0, NULL, lexer -> source[i], lexer -> lineNum, 0), lexer -> tokenTray);
                 break;
         }
-
-        lexer_advance(lexer);
     }
 
-    tokenlist_add(create_token(T___EOF, 0, NULL, lexer -> currentChar, lexer -> lineNum, 0), lexer -> tokenTray);
+    if (strcmp(lexer -> source, "___EOF___") == 0) {
+        tokenlist_add(create_token(T___EOF, 0, NULL, '\0', lexer -> lineNum, 0), lexer -> tokenTray);
+    }
 }
